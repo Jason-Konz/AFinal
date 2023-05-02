@@ -164,7 +164,7 @@ class Computers extends React.Component {
                             return (
                              <li key={computer.id}>
                                 <div className={computer.id}>
-                                    {computer.isReserved}&nbsp; 
+                                    {String(computer.isReserved)}&nbsp; 
 
                                     User: {computer.userID}
                                 </div>
