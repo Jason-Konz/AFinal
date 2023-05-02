@@ -221,17 +221,19 @@ class Computers extends React.Component {
                     <ul>
                         {this.state.computers.map(computer => {
                             let button;
+                            let text;
                             if (computer.isReserved) {
                                 button = <button onClick={() => this.sendReleaseRequest(computer.id)}>Release</button>;
+                                text = <span>User: {computer.userID}</span>;
                             } else {
                                 button = <button onClick={() => this.sendReserveRequest(computer.id)}>Reserve</button>;
+                                text = <span>Click to reserve</span>;
                             }
                             return (
                              <li key={computer.id}>
                                 <div className={computer.id}>
-                                    {String(computer.isReserved)}&nbsp; 
-
-                                    User: {computer.userID}
+                                    Computer: {computer.id} <br />
+                                    {text}
                                     <br />{button}
                                 </div>
                              </li>
