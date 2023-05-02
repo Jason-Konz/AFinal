@@ -122,7 +122,7 @@ class Computers extends React.Component {
             isLoaded: false,
             error: null,
         };
-        // this.sendReserveRequest = this.sendReserveRequest.bind(this);
+        this.sendReserveRequest = this.sendReserveRequest.bind(this);
     }
 
     sendReserveRequest(computer_id) {
@@ -133,6 +133,27 @@ class Computers extends React.Component {
         .then(
             (result) => {
                 if (result == 'ok') {
+                    this.props.onLogin();
+                }
+                else {
+                    alert('Could not reserve');
+                }
+            },
+            (error) => {
+                alert('General login error');
+            }
+        )
+    }
+
+    sendReleaseRequest(computer_id) {
+        fetch('/api/release/'+computer_id+'/', {
+            method: 'PUT',
+        })
+        .then(result => result.text())
+        .then(
+            (result) => {
+                if (result == 'ok') {
+                    this.setState({ state: this.state });
                     this.props.onLogin();
                 }
                 else {
@@ -181,13 +202,19 @@ class Computers extends React.Component {
                     <h1>HPCVC Computers</h1>
                     <ul>
                         {this.state.computers.map(computer => {
+                            let button;
+                            if (computer.isReserved) {
+                                button = <button onClick={() => this.sendReleaseRequest(computer.id)}>Release</button>;
+                            } else {
+                                button = <button onClick={() => this.sendReserveRequest(computer.id)}>Reserve</button>;
+                            }
                             return (
                              <li key={computer.id}>
                                 <div className={computer.id}>
                                     {String(computer.isReserved)}&nbsp; 
 
                                     User: {computer.userID}
-                                    <br /><button onClick={this.sendReserveRequest(computer.id)}>Reserve</button>
+                                    <br />{button}
                                 </div>
                              </li>
                             )
