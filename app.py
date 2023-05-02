@@ -209,3 +209,11 @@ def release(computer_id):
     db.session.commit()
     return 'ok'
 
+
+
+
+
+
+
+
+
