@@ -87,11 +87,11 @@ def validate(d, keys):
 @app.route('/api/register/', methods=['POST'])
 def register():
     try:
-        validate(request.form, ['username', 'password, email'])
+        validate(request.form, ['username', 'password', 'email'])
         u, p, e = request.form['username'], request.form['password'], \
                   request.form['email']
 
-        if User.query.filter_by(username=u).first() == None:
+        if not User.query.filter_by(username=u).first() == None:
             return 'fail - duplicate username'
 
         new_user = User(username=u, password=p, email=e)

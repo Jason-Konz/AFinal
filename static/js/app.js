@@ -1,80 +1,223 @@
-class TodoListApp extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            items: [],
-            text: ""
-        };
 
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
+class Login extends React.Component {
 
-    onChange(evt) {
-        this.setState({
-            text: evt.target.value
-        });
-    }
-
-    onSubmit(evt) {
-        evt.preventDefault();
-        if (this.state.text.length == 0){
-            return;
-        }
-        const newItem = {
-            text: this.state.text,
-            id: Date.now(),
-            completed: false
-        };
-
-        this.setState({
-            items: this.state.items.concat(newItem),
-            text: ''
-        });
+    sendLoginRequest() {
+        let formData = new FormData( document.querySelector('#login-form') );
+        fetch('/api/login/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(result => result.text())
+        .then(
+            (result) => {
+                if (result == 'ok') {
+                    this.props.onLogin();
+                }
+                else {
+                    alert('Bad username/password combo');
+                }
+            },
+            (error) => {
+                alert('General login error');
+            }
+        )
     }
 
     render() {
         return (
-            <div>
-                <h3>TODO LIST</h3>
-                <TodoList items={this.state.items} />
-                <form onSubmit={this.onSubmit}>
-                    <label>
-                    What needs to be done.
-                    </label>
-                    <input
-                        id="new-todo-item" 
-                        onChange={this.onChange}
-                        value={this.state.text} 
-                    />
-                    <button>
-                    Add #{this.state.items.length + 1}
-                    </button>
-                </form>
+            <form id="login-form">
+             <input
+                name="username"
+                id="username"
+                type="text"
+                placeholder="username" />
+             <input
+                name="password"
+                id="password"
+                type="password"
+                placeholder="password" />
+             <br />
+             <button
+                id="login-button"
+                onClick={(evt) => {
+                    evt.preventDefault();
+                    this.sendLoginRequest();
+                }}>
+               Login
+             </button>
+            </form>
+        );
+    }
+}
+
+class Register extends React.Component {
+    sendRegisterRequest() {
+        let formData = new FormData( document.querySelector('#register-form') );
+        fetch('/api/register/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(result => result.text())
+        .then(
+            (result) => {
+                if (result == 'ok') {
+                    this.props.onRegister();
+                }
+                else {
+                    alert('Bad username/password combo');
+                }
+            },
+            (error) => {
+                alert('General login error');
+            }
+        )
+    }
+
+    render() {
+        return (
+            <form id="register-form">
+             <input
+                name="username"
+                id="username"
+                type="text"
+                placeholder="username" />
+             <br />
+             <input
+                name="password"
+                id="password"
+                type="password"
+                placeholder="password" />
+             <br />
+             <input
+                name="email"
+                id="email"
+                type="email"
+                placeholder="email" />
+             <br />
+             <button
+                id="register-button"
+                onClick={(evt) => {
+                    evt.preventDefault();
+                    this.sendRegisterRequest();
+                }}>
+               Register
+             </button>
+            </form>
+        );
+    }
+
+
+}
+
+
+class Reservation extends React.Component {
+
+
+}
+
+class Computers extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            computers: [],
+            isLoaded: false,
+            error: null,
+        };
+    }
+
+    componentDidMount() {
+        fetch('/api/statuses')
+        .then(result => result.json())
+        .then(
+            (result) => {
+                this.setState({
+                    computers: result,
+                    isLoaded: true
+                });
+            },
+            (error) => {
+                this.setState({
+                    error: error,
+                    isLoaded: true
+                });
+            }
+        )
+    }
+
+    render() {
+        if (this.state.error) {
+            return (
+                <div>Error: Someone has stolen all the Byte Pipe computers.</div>
+            );
+        }
+        else if (!this.state.isLoaded) {
+            return (
+                <div>Waiting for statuses...</div>
+            );
+        }
+        else {
+            return (
+                <div className="computers">
+                    <h1>HPCVC Computers</h1>
+                    <ul>
+                        {this.state.computers.map(computer => {
+                            return (
+                             <li key={computer.id}>
+                                <div className={computer.id}>
+                                    {computer.isReserved}&nbsp; 
+
+                                    User: {computer.userID}
+                                </div>
+                             </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            );
+        }
+    }
+}
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            view: 'login'
+        };
+    }
+
+    onLogin() {
+        this.setState({
+            view: 'computers'
+        });
+    }
+    
+    onRegister(){
+        this.setState({
+            view: 'register'
+        });
+    }
+
+    render() {
+        let loginComponent = <Login onLogin={() => this.onLogin()} />;
+        if (this.state.view == 'computers') {
+            loginComponent = <Computers />;
+        }
+        let registerComponent = <Register onRegister={() => this.onRegister()} />;
+        if (this.state.view == 'login'){
+            registerComponent = <Register />;
+        }
+
+        return (
+            <div className="app">
+              {loginComponent}
+              {registerComponent}
             </div>
         );
     }
 }
 
-class TodoList extends React.Component {
-
-    render() {
-        let lis = '';
-        for (let i = 0; i < this.props.items.length; i++){
-            lis += <li>{this.props.items[i].text}</li>;
-        }
-        return (
-
-            <ul>
-                    {lis}
-
-            </ul>
-
-        );
-
-    }
-}
-
-const container = document.getElementById('todo-app');
+const container = document.querySelector('#app');
 const root = ReactDOM.createRoot(container);
-root.render(<TodoListApp />);
+root.render(<App />);
