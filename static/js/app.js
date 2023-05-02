@@ -223,7 +223,7 @@ class App extends React.Component {
 
         if (this.state.view == 'register'){
             button = <button onClick={this.goToLogin}>Login</button>;
-            component = <Register />;
+            component = <Register onRegister={() => this.onRegister()} />;
         }
 
         return (
