@@ -133,6 +133,7 @@ class Computers extends React.Component {
         .then(
             (result) => {
                 if (result == 'ok') {
+                    this.updateComputers();
                     this.props.onLogin();
                 }
                 else {
@@ -153,7 +154,7 @@ class Computers extends React.Component {
         .then(
             (result) => {
                 if (result == 'ok') {
-                    this.setState({ state: this.state });
+                    this.updateComputers();
                     this.props.onLogin();
                 }
                 else {
@@ -180,6 +181,23 @@ class Computers extends React.Component {
                 this.setState({
                     error: error,
                     isLoaded: true
+                });
+            }
+        )
+    }
+
+    updateComputers() {
+        fetch('/api/statuses')
+        .then(result => result.json())
+        .then(
+            (result) => {
+                this.setState({
+                    computers: result,
+                });
+            },
+            (error) => {
+                this.setState({
+                    error: error,
                 });
             }
         )
