@@ -110,10 +110,9 @@ class Register extends React.Component {
 }
 
 
-class Reservation extends React.Component {
-
-
-}
+// class Reservation extends React.Component {
+    
+// }
 
 class Computers extends React.Component {
     constructor(props) {
@@ -123,6 +122,27 @@ class Computers extends React.Component {
             isLoaded: false,
             error: null,
         };
+        // this.sendReserveRequest = this.sendReserveRequest.bind(this);
+    }
+
+    sendReserveRequest(computer_id) {
+        fetch('/api/reserve/'+computer_id+'/', {
+            method: 'PUT',
+        })
+        .then(result => result.text())
+        .then(
+            (result) => {
+                if (result == 'ok') {
+                    this.props.onLogin();
+                }
+                else {
+                    alert('Could not reserve');
+                }
+            },
+            (error) => {
+                alert('General login error');
+            }
+        )
     }
 
     componentDidMount() {
@@ -167,6 +187,7 @@ class Computers extends React.Component {
                                     {String(computer.isReserved)}&nbsp; 
 
                                     User: {computer.userID}
+                                    <br /><button onClick={this.sendReserveRequest(computer.id)}>Reserve</button>
                                 </div>
                              </li>
                             )
@@ -226,7 +247,7 @@ class App extends React.Component {
 
         if (this.state.view == 'computers') {
             button = <button onClick={this.goToLogout}>Logout</button>;
-            component = <Computers />;
+            component = <Computers onLogin={() => this.onLogin()}/>;
         }
 
         if (this.state.view == 'register'){
