@@ -187,6 +187,7 @@ class App extends React.Component {
         };
         this.goToLogin = this.goToLogin.bind(this);
         this.goToRegister = this.goToRegister.bind(this);
+        this.goToLogout = this.goToLogout.bind(this);
     }
 
     onLogin() {
@@ -213,11 +214,18 @@ class App extends React.Component {
         });
     }
 
+    goToLogout(){
+        this.setState({
+            view: 'login'
+        });
+    }
+
     render() {
         let button = <button onClick={this.goToRegister}>Register</button>;
         let component = <Login onLogin={() => this.onLogin()} />;
 
         if (this.state.view == 'computers') {
+            button = <button onClick={this.goToLogout}>Logout</button>;
             component = <Computers />;
         }
 
