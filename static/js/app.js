@@ -185,6 +185,8 @@ class App extends React.Component {
         this.state = {
             view: 'login'
         };
+        this.goToLogin = this.goToLogin.bind(this);
+        this.goToRegister = this.goToRegister.bind(this);
     }
 
     onLogin() {
@@ -195,24 +197,39 @@ class App extends React.Component {
     
     onRegister(){
         this.setState({
+            view: 'login'
+        });
+    }
+
+    goToLogin(){
+        this.setState({
+            view: 'login'
+        });
+    }
+
+    goToRegister(){
+        this.setState({
             view: 'register'
         });
     }
 
     render() {
-        let loginComponent = <Login onLogin={() => this.onLogin()} />;
+        let button = <button onClick={this.goToRegister}>Register</button>;
+        let component = <Login onLogin={() => this.onLogin()} />;
+
         if (this.state.view == 'computers') {
-            loginComponent = <Computers />;
+            component = <Computers />;
         }
-        let registerComponent = <Register onRegister={() => this.onRegister()} />;
-        if (this.state.view == 'login'){
-            registerComponent = <Register />;
+
+        if (this.state.view == 'register'){
+            button = <button onClick={this.goToLogin}>Login</button>;
+            component = <Register />;
         }
 
         return (
             <div className="app">
-              {loginComponent}
-              {registerComponent}
+                {button}
+                {component}
             </div>
         );
     }
