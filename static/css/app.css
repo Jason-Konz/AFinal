@@ -1,0 +1,44 @@
+
+
+/* Set the background color of the entire page to light gray */
+body {
+  background-color: #f5f5f5;
+}
+
+/* Style all the buttons on the page */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 25px;
+  margin-top: 25px;
+  transition: opacity 0.15s;
+
+}
+
+
+button:hover{
+	opacity: 0.8;
+
+}
+
+
+/* Style the input fields */
+input[type="text"] {
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  margin-right: 25px;
+}
+
+/* Add a margin to the top of the page content */
+#app {
+  margin-top: 30px;
+}
+
+
