@@ -13,6 +13,7 @@ class Computer(db.Model):
         return {
             'id': self.id,
             'userID': self.user_id,
+            'user': self.user.serialize(),
             'isReserved': self.is_reserved
         }
 

@@ -110,9 +110,6 @@ class Register extends React.Component {
 }
 
 
-// class Reservation extends React.Component {
-    
-// }
 
 class Computers extends React.Component {
     constructor(props) {
@@ -184,6 +181,16 @@ class Computers extends React.Component {
                 });
             }
         )
+
+        this.timer = setInterval(() => {
+            this.updateComputers;
+        },30000
+        )
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer)
+
     }
 
     updateComputers() {
@@ -202,6 +209,7 @@ class Computers extends React.Component {
             }
         )
     }
+
 
     render() {
         if (this.state.error) {
@@ -224,7 +232,8 @@ class Computers extends React.Component {
                             let text;
                             if (computer.isReserved) {
                                 button = <button onClick={() => this.sendReleaseRequest(computer.id)}>Release</button>;
-                                text = <span>User: {computer.userID}</span>;
+                                text = <span>{computer.user.username} reserved this computer</span>;
+
                             } else {
                                 button = <button onClick={() => this.sendReserveRequest(computer.id)}>Reserve</button>;
                                 text = <span>Click to reserve</span>;
@@ -255,9 +264,10 @@ class App extends React.Component {
         };
         this.goToLogin = this.goToLogin.bind(this);
         this.goToRegister = this.goToRegister.bind(this);
-        this.goToLogout = this.goToLogout.bind(this);
+        this.sendLogoutRequest = this.sendLogoutRequest.bind(this);
     }
 
+    
     onLogin() {
         this.setState({
             view: 'computers'
@@ -282,10 +292,27 @@ class App extends React.Component {
         });
     }
 
-    goToLogout(){
-        this.setState({
-            view: 'login'
-        });
+
+    sendLogoutRequest() {
+        fetch('/api/logout/', {
+            method: 'GET',
+        })
+        .then(result => result.text())
+        .then(
+            (result) => {
+                if (result == 'ok') {
+                    this.setState({
+                        view: "login",
+                    });
+                }
+                else {
+                    alert('failed logout');
+                }
+            },
+            (error) => {
+                alert('General login error');
+            }
+        )
     }
 
     render() {
@@ -293,7 +320,7 @@ class App extends React.Component {
         let component = <Login onLogin={() => this.onLogin()} />;
 
         if (this.state.view == 'computers') {
-            button = <button onClick={this.goToLogout}>Logout</button>;
+            button = <button onClick={this.sendLogoutRequest}>Logout</button>;
             component = <Computers onLogin={() => this.onLogin()}/>;
         }
 
